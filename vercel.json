@@ -1,3 +1,12 @@
 {
-  "rewrites": [{ "source": "/:path*", "destination": "/index.html" }]
+  "rewrites": [
+    { 
+      "source": "/newsnow-api/:path*", 
+      "destination": "https://newsnow.busiyi.world/api/:path*" 
+    },
+    { 
+      "source": "/:path*", 
+      "destination": "/index.html" 
+    }
+  ]
 }
