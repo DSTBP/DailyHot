@@ -39,6 +39,10 @@ axios.interceptors.response.use(
     return response.data;
   },
   (error) => {
+    if (error.config && error.config.customSilent) {
+      return Promise.reject(error);
+    }
+
     $loadingBar.error();
     if (error.response) {
       let data = error.response.data;
