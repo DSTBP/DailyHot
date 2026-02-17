@@ -1,7 +1,7 @@
 import axios from "@/api/request";
 
 // 直接写死你要请求的绝对路径
-const NEWSNOW_API = "https://newsnow.busiyi.world/api/s";
+const NEWSNOW_API = "/newsnow-api/s";
 
 /**
  * 获取热榜分类数据 (DailyHot + Newsnow 融合版)
