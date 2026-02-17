@@ -75,7 +75,7 @@ export const getHotLists = async (type, isNew = false, params) => {
       }
     } catch (newsnowError) {
       console.error(`[${type}] 备用源同样请求失败:`, newsnowError);
-      return { code: 500, title: "获取失败", message: "数据源均不可用" };
+      // return { code: 500, title: "获取失败", message: "数据源均不可用" };
     }
   }
 };
