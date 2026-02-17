@@ -1,6 +1,5 @@
 import axios from "@/api/request";
 
-// 直接写死你要请求的绝对路径
 const NEWSNOW_API = "/newsnow-api/s";
 
 /**
@@ -8,7 +7,7 @@ const NEWSNOW_API = "/newsnow-api/s";
  */
 export const getHotLists = async (type, isNew = false, params) => {
   try {
-    // 1. 优先尝试从 DailyHot 的 API 获取数据 (这里走拦截器，会被加上 VITE_GLOBAL_API)
+    // 1. 优先尝试从 DailyHot 的 API 获取数据
     const res = await axios({
       method: "GET",
       url: `/${type}`,
@@ -19,20 +18,32 @@ export const getHotLists = async (type, isNew = false, params) => {
       },
     });
 
-    if (res && res.code === 200) {
-      return res;
+    // 【新增逻辑】：严格校验 DailyHot 返回的数据是否真实有效
+    if (res && res.code === 200 && Array.isArray(res.data) && res.data.length > 0) {
+      // 检查数据列表，只要有一条数据看起来是正常的（有标题且URL没有包含undefined）
+      const isValidData = res.data.some(item => {
+        const hasTitle = item.title && item.title.trim() !== ""; // 有标题
+        const hasValidUrl = item.url && !String(item.url).includes("undefined"); // URL 不能包含 undefined
+        return hasTitle && hasValidUrl;
+      });
+
+      // 数据确实正常，才真正返回给前端渲染
+      if (isValidData) {
+        return res; 
+      }
     }
-    throw new Error("DailyHot 获取失败或未包含该榜单");
+    
+    // 如果虽然返回了 200，但数据为空、或者是 undefined 的脏数据，主动抛错进入下方的 catch 走备用源
+    throw new Error("DailyHot 获取成功但数据内容无效(脏数据/空列表)");
 
   } catch (error) {
-    console.warn(`[${type}] DailyHot 暂无数据，正在切换到 Newsnow 备用源...`);
+    console.warn(`[${type}] DailyHot 无有效数据，切换到 Newsnow 备用源...`);
 
     try {
-      // 2. 回退策略：使用原生 fetch，彻底绕开 axios 的 baseURL 污染，直接请求目标地址！
+      // 2. 回退策略：使用原生 fetch
       const targetUrl = `${NEWSNOW_API}?id=${type}&latest=${isNew}`;
       const response = await fetch(targetUrl, {
         method: 'GET',
-        // 补充一下 headers 以防后端校验
         headers: {
           'Accept': 'application/json'
         }
@@ -51,6 +62,8 @@ export const getHotLists = async (type, isNew = false, params) => {
           title: "获取成功",
           message: "(Newsnow源)",
           updateTime: data.updatedTime,
+          // newsnow 的 type 等效于 subtitle，这里随便给个类型字段，方便我们在骨架屏那里用
+          type: "热榜", 
           data: data.items.map(item => ({
             title: item.title,
             url: item.url,

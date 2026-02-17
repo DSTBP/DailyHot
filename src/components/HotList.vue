@@ -19,7 +19,7 @@
           <n-text class="name-text">{{ hotData.label }}</n-text>
         </div>
         <n-text v-if="hotListData?.type" class="subtitle" :depth="2">
-          {{ hotListData.type }}
+          {{ hotListData.type || '热榜' }}
         </n-text>
         <n-skeleton v-else width="60px" text round />
       </n-space>
