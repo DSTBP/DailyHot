@@ -3,7 +3,7 @@
     <div class="header">
       <div class="title">全局设置</div>
       <n-button @click="goBack" size="large" secondary strong round>
-        返回上一页
+        返回
       </n-button>
     </div>
     
