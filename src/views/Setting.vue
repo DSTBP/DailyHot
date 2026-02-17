@@ -1,6 +1,12 @@
 <template>
   <div class="setting">
-    <div class="title">全局设置</div>
+    <div class="header">
+      <div class="title">全局设置</div>
+      <n-button @click="goBack" size="large" secondary strong round>
+        返回上一页
+      </n-button>
+    </div>
+    
     <n-h6 prefix="bar"> 基础设置 </n-h6>
     <n-card class="set-item">
       <div class="top">
@@ -147,8 +153,10 @@
 import { storeToRefs } from "pinia";
 import { mainStore } from "@/store";
 import { useOsTheme } from "naive-ui";
+import { useRouter } from "vue-router"; // 引入路由
 import draggable from "vuedraggable";
 
+const router = useRouter();
 const store = mainStore();
 const osThemeRef = useOsTheme();
 const {
@@ -184,6 +192,11 @@ const linkOptions = [
   },
 ];
 
+// 返回上一页方法
+const goBack = () => {
+  router.push("/"); // 考虑到从直接链接进入的极端情况，这里使用 push 到主页更稳妥，或者你也可以用 router.back()
+};
+
 // 开启明暗自动跟随
 const themeAutoOpen = (val) => {
   console.log(osThemeRef.value);
@@ -215,11 +228,18 @@ const reset = () => {
 
 <style lang="scss" scoped>
 .setting {
-  .title {
+  // 修改 Header 样式以并排显示标题和按钮
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-top: 30px;
     margin-bottom: 20px;
-    font-size: 40px;
-    font-weight: bold;
+
+    .title {
+      font-size: 40px;
+      font-weight: bold;
+    }
   }
 
   .n-h {

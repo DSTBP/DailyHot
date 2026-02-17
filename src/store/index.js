@@ -61,6 +61,7 @@ export const mainStore = defineStore("mainData", {
         { label: "Freebuf", name: "freebuf", order: 48, show: true },
         { label: "腾讯视频", name: "qqvideo", order: 49, show: true },
         { label: "爱奇艺", name: "iqiyi", order: 50, show: true },
+        { label: "快手", name: "kuaishou", order: 51, show: true },
       ],
       newsArr: [],
       // 链接跳转方式
